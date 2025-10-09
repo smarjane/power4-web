@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Puissance 4</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1>PUISSANCE 4</h1>
+
+  <!-- Ligne horizontale de boutons -->
+  <div class="top-controls">
+    {{range $i, $col := index .Grille 0}}
+      <button>⬇</button>
+    {{end}}
+  </div>
+
+  <!-- Plateau -->
+  <div class="board">
+    {{range .Grille}}
+      <div class="row">
+        {{range .}}
+          <div class="cell">{{.}}</div>
+        {{end}}
+      </div>
+    {{end}}
+  </div>
+</body>
+</html>
