@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Match nul</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1 class="winner-title">🤝 Match nul ! La grille est pleine.</h1>
+
+  <div class="board">
+    {{range .Grille}}
+      <div class="row">
+        {{range .}}
+          <div class="cell">
+            {{if eq . "🔴"}}
+              <button class="red-btn" disabled>🔴</button>
+            {{else if eq . "🟡"}}
+              <button class="yellow-btn" disabled>🟡</button>
+            {{end}}
+          </div>
+        {{end}}
+      </div>
+    {{end}}
+  </div>
+
+  <form method="POST" action="/reset">
+    <button class="new-game-btn" type="submit">🔄 Nouveau jeu</button>
+  </form>
+</body>
+</html>

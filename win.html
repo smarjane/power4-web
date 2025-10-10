@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Victoire !</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1>🎉 Joueur {{.Joueur}} a gagné ! 🎉</h1>
+  <form method="POST" action="/reset">
+    <button type="submit">🔄 Nouveau jeu</button>
+  </form>
+</body>
+</html>

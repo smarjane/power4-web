@@ -11,7 +11,10 @@
   <!-- Ligne horizontale de boutons -->
   <div class="top-controls">
     {{range $i, $col := index .Grille 0}}
-      <button>⬇</button>
+      <form method="POST" action="/play">
+        <input type="hidden" name="col" value="{{$i}}">
+        <button type="submit">⬇</button>
+      </form>
     {{end}}
   </div>
 
@@ -20,7 +23,7 @@
     {{range .Grille}}
       <div class="row">
         {{range .}}
-          <div class="cell">{{.}}</div>
+          <div class="cell {{if eq . "🔴"}}red{{else if eq . "🟡"}}yellow{{end}}">{{.}}</div>
         {{end}}
       </div>
     {{end}}
