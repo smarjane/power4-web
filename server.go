@@ -2,6 +2,7 @@ package main
 
 import (
 	"html/template"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -9,10 +10,15 @@ import (
 type PageData struct {
 	Grille [][]string
 	Joueur string
+	Winner string
+	Looser string
+	Nom    string
 }
 
 var grille [][]string
 var joueur string = "🔴"
+var nomUtilisateur string = ""
+var templates *template.Template
 
 func initGrille() [][]string {
 	grille := make([][]string, 6)
@@ -22,13 +28,36 @@ func initGrille() [][]string {
 	return grille
 }
 
-func handlerAccueil(w http.ResponseWriter, r *http.Request) {
+func handlerStart(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		r.ParseForm()
+		nom := r.FormValue("username")
+		if nom == "" {
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+			return
+		}
+		nomUtilisateur = nom
+		grille = initGrille()
+		joueur = "🔴"
+		http.Redirect(w, r, "/game", http.StatusSeeOther)
+	} else {
+		err := templates.ExecuteTemplate(w, "start", nil)
+		if err != nil {
+			http.Error(w, "Erreur", http.StatusInternalServerError)
+		}
+	}
+}
+
+func handlerGame(w http.ResponseWriter, r *http.Request) {
 	data := PageData{
 		Grille: grille,
 		Joueur: joueur,
+		Nom:    nomUtilisateur,
 	}
-	tmpl := template.Must(template.ParseFiles("index.html"))
-	tmpl.Execute(w, data)
+	err := templates.ExecuteTemplate(w, "index", data)
+	if err != nil {
+		http.Error(w, "Erreur", http.StatusInternalServerError)
+	}
 }
 
 func handlerPlay(w http.ResponseWriter, r *http.Request) {
@@ -36,7 +65,7 @@ func handlerPlay(w http.ResponseWriter, r *http.Request) {
 	colStr := r.FormValue("col")
 	c, err := strconv.Atoi(colStr)
 	if err != nil || c < 0 || c > 6 {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, "/game", http.StatusSeeOther)
 		return
 	}
 
@@ -58,25 +87,37 @@ func handlerPlay(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 	}
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, "/game", http.StatusSeeOther)
 }
 
 func handlerWin(w http.ResponseWriter, r *http.Request) {
+	looser := "🔴"
+	if joueur == "🔴" {
+		looser = "🟡"
+	}
 	data := PageData{
 		Grille: grille,
 		Joueur: joueur,
+		Winner: joueur,
+		Looser: looser,
+		Nom:    nomUtilisateur,
 	}
-	tmpl := template.Must(template.ParseFiles("win.html"))
-	tmpl.Execute(w, data)
+	err := templates.ExecuteTemplate(w, "win", data)
+	if err != nil {
+		http.Error(w, "Erreur", http.StatusInternalServerError)
+	}
 }
 
 func handlerDraw(w http.ResponseWriter, r *http.Request) {
 	data := PageData{
 		Grille: grille,
 		Joueur: joueur,
+		Nom:    nomUtilisateur,
 	}
-	tmpl := template.Must(template.ParseFiles("full.html"))
-	tmpl.Execute(w, data)
+	err := templates.ExecuteTemplate(w, "full", data)
+	if err != nil {
+		http.Error(w, "Erreur", http.StatusInternalServerError)
+	}
 }
 
 func handlerReset(w http.ResponseWriter, r *http.Request) {
@@ -85,19 +126,7 @@ func handlerReset(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-func main() {
-	grille = initGrille()
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	http.HandleFunc("/", handlerAccueil)
-	http.HandleFunc("/play", handlerPlay)
-	http.HandleFunc("/win", handlerWin)
-	http.HandleFunc("/full", handlerDraw)
-	http.HandleFunc("/reset", handlerReset)
-	http.ListenAndServe(":8080", nil)
-}
-
 func checkVictory(player string) bool {
-	// Horizontal
 	for row := 0; row < 6; row++ {
 		for col := 0; col <= 3; col++ {
 			if grille[row][col] == player &&
@@ -108,7 +137,6 @@ func checkVictory(player string) bool {
 			}
 		}
 	}
-	// Vertical
 	for col := 0; col < 7; col++ {
 		for row := 0; row <= 2; row++ {
 			if grille[row][col] == player &&
@@ -119,7 +147,6 @@ func checkVictory(player string) bool {
 			}
 		}
 	}
-	// Diagonale ↘
 	for row := 0; row <= 2; row++ {
 		for col := 0; col <= 3; col++ {
 			if grille[row][col] == player &&
@@ -130,7 +157,6 @@ func checkVictory(player string) bool {
 			}
 		}
 	}
-	// Diagonale ↙
 	for row := 3; row < 6; row++ {
 		for col := 0; col <= 3; col++ {
 			if grille[row][col] == player &&
@@ -153,4 +179,24 @@ func isDraw() bool {
 		}
 	}
 	return true
+}
+
+func main() {
+	grille = initGrille()
+	templates = template.Must(template.ParseFiles(
+		"html/start.html",
+		"html/index.html",
+		"html/win.html",
+		"html/full.html",
+	))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	http.HandleFunc("/", handlerStart)
+	http.HandleFunc("/start", handlerStart)
+	http.HandleFunc("/game", handlerGame)
+	http.HandleFunc("/play", handlerPlay)
+	http.HandleFunc("/win", handlerWin)
+	http.HandleFunc("/full", handlerDraw)
+	http.HandleFunc("/reset", handlerReset)
+	log.Println("Serveur lancé sur http://localhost:8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
