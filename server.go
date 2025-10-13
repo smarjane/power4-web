@@ -41,10 +41,11 @@ func handlerStart(w http.ResponseWriter, r *http.Request) {
 		joueur = "🔴"
 		http.Redirect(w, r, "/game", http.StatusSeeOther)
 	} else {
-		err := templates.ExecuteTemplate(w, "start", nil)
+		tmpl, err := template.ParseFiles("html/start.html")
 		if err != nil {
 			http.Error(w, "Erreur", http.StatusInternalServerError)
 		}
+		tmpl.Execute(w, nil)
 	}
 }
 
@@ -54,10 +55,11 @@ func handlerGame(w http.ResponseWriter, r *http.Request) {
 		Joueur: joueur,
 		Nom:    nomUtilisateur,
 	}
-	err := templates.ExecuteTemplate(w, "index", data)
+	tmpl, err := template.ParseFiles("html/index.html")
 	if err != nil {
 		http.Error(w, "Erreur", http.StatusInternalServerError)
 	}
+	tmpl.Execute(w, data)
 }
 
 func handlerPlay(w http.ResponseWriter, r *http.Request) {
@@ -102,10 +104,11 @@ func handlerWin(w http.ResponseWriter, r *http.Request) {
 		Looser: looser,
 		Nom:    nomUtilisateur,
 	}
-	err := templates.ExecuteTemplate(w, "win", data)
+	tmpl, err := template.ParseFiles("html/win.html")
 	if err != nil {
 		http.Error(w, "Erreur", http.StatusInternalServerError)
 	}
+	tmpl.Execute(w, data)
 }
 
 func handlerDraw(w http.ResponseWriter, r *http.Request) {
@@ -114,10 +117,11 @@ func handlerDraw(w http.ResponseWriter, r *http.Request) {
 		Joueur: joueur,
 		Nom:    nomUtilisateur,
 	}
-	err := templates.ExecuteTemplate(w, "full", data)
+	tmpl, err := template.ParseFiles("html/full.html")
 	if err != nil {
 		http.Error(w, "Erreur", http.StatusInternalServerError)
 	}
+	tmpl.Execute(w, data)
 }
 
 func handlerReset(w http.ResponseWriter, r *http.Request) {
