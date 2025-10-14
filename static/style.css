@@ -212,3 +212,19 @@ button.new-game-btn:hover {
     font-size: 2rem;
   }
 }
+
+/* ⚙️ AJOUT : ALIGNEMENT DU PLATEAU SELON LA DIFFICULTÉ */
+.board.difficulte-facile {
+  grid-template-columns: repeat(7, 80px);
+  grid-template-rows: repeat(6, 80px);
+}
+
+.board.difficulte-normal {
+  grid-template-columns: repeat(9, 80px);
+  grid-template-rows: repeat(6, 80px);
+}
+
+.board.difficulte-difficile {
+  grid-template-columns: repeat(8, 80px);
+  grid-template-rows: repeat(7, 80px);
+}

@@ -19,11 +19,12 @@ var grille [][]string
 var joueur string = "🔴"
 var nomUtilisateur string = ""
 var templates *template.Template
+var rows, cols int = 6, 7 // ✅ dimensions par défaut, modifiables selon difficulté
 
 func initGrille() [][]string {
-	grille := make([][]string, 6)
+	grille := make([][]string, rows)
 	for i := range grille {
-		grille[i] = make([]string, 7)
+		grille[i] = make([]string, cols)
 	}
 	return grille
 }
@@ -31,12 +32,28 @@ func initGrille() [][]string {
 func handlerStart(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		r.ParseForm()
-		nom := r.FormValue("username")
-		if nom == "" {
+		player1 := r.FormValue("player1")
+		player2 := r.FormValue("player2")
+		difficulty := r.FormValue("difficulty")
+
+		if player1 == "" || player2 == "" || difficulty == "" {
 			http.Redirect(w, r, "/", http.StatusSeeOther)
 			return
 		}
-		nomUtilisateur = nom
+
+		nomUtilisateur = player1 + " vs " + player2
+
+		switch difficulty {
+		case "facile":
+			rows, cols = 6, 7
+		case "normal":
+			rows, cols = 6, 9
+		case "difficile":
+			rows, cols = 7, 8
+		default:
+			rows, cols = 6, 7
+		}
+
 		grille = initGrille()
 		joueur = "🔴"
 		http.Redirect(w, r, "/game", http.StatusSeeOther)
@@ -44,6 +61,7 @@ func handlerStart(w http.ResponseWriter, r *http.Request) {
 		tmpl, err := template.ParseFiles("html/start.html")
 		if err != nil {
 			http.Error(w, "Erreur", http.StatusInternalServerError)
+			return
 		}
 		tmpl.Execute(w, nil)
 	}
@@ -175,8 +193,8 @@ func checkVictory(player string) bool {
 }
 
 func isDraw() bool {
-	for row := 0; row < 6; row++ {
-		for col := 0; col < 7; col++ {
+	for row := 0; row < rows; row++ {
+		for col := 0; col < cols; col++ {
 			if grille[row][col] == "" {
 				return false
 			}

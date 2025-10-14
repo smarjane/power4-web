@@ -9,11 +9,20 @@
   <div class="start-container">
     <h1>Bienvenue dans Puissance 4</h1>
     <form action="/start" method="POST">
-      <label for="username">Nom du joueur 1 🔴 :</label><br>
-      <input type="text" id="username" name="username" required><br><br>
+      <!-- Champs joueurs -->
+      <label for="player1">Nom du joueur 1 🔴 :</label><br>
+      <input type="text" id="player1" name="player1" required><br><br>
 
-      <label for="username">Nom du joueur 2 🟡 :</label><br>
-      <input type="text" id="username" name="username" required><br><br>
+      <label for="player2">Nom du joueur 2 🟡 :</label><br>
+      <input type="text" id="player2" name="player2" required><br><br>
+
+      <!-- Choix de difficulté -->
+      <p>Choisissez la difficulté :</p>
+      <label><input type="radio" name="difficulty" value="facile" required> Facile (6x7)</label><br>
+      <label><input type="radio" name="difficulty" value="normal"> Normal (6x9)</label><br>
+      <label><input type="radio" name="difficulty" value="difficile"> Difficile (7x8)</label><br><br>
+
+      <!-- Bouton démarrer -->
       <button type="submit">Démarrer le jeu</button>
     </form>
   </div>
