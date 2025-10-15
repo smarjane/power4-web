@@ -8,18 +8,20 @@ import (
 )
 
 type PageData struct {
-	Grille [][]string
-	Joueur string
-	Winner string
-	Looser string
-	Nom    string
+	Grille     [][]string
+	Joueur     string
+	Winner     string
+	Looser     string
+	Nom        string
+	Difficulty int
 }
 
 var grille [][]string
 var joueur string = "🔴"
 var nomUtilisateur string = ""
 var templates *template.Template
-var rows, cols int = 6, 7 // ✅ dimensions par défaut, modifiables selon difficulté
+var rows, cols int = 7, 8 // ✅ dimensions par défaut, modifiables selon difficulté
+var difficulty_test = 1
 
 func initGrille() [][]string {
 	grille := make([][]string, rows)
@@ -46,10 +48,13 @@ func handlerStart(w http.ResponseWriter, r *http.Request) {
 		switch difficulty {
 		case "facile":
 			rows, cols = 6, 7
+			difficulty_test = 1
 		case "normal":
 			rows, cols = 6, 9
+			difficulty_test = 2
 		case "difficile":
 			rows, cols = 7, 8
+			difficulty_test = 3
 		default:
 			rows, cols = 6, 7
 		}
@@ -69,9 +74,10 @@ func handlerStart(w http.ResponseWriter, r *http.Request) {
 
 func handlerGame(w http.ResponseWriter, r *http.Request) {
 	data := PageData{
-		Grille: grille,
-		Joueur: joueur,
-		Nom:    nomUtilisateur,
+		Grille:     grille,
+		Joueur:     joueur,
+		Nom:        nomUtilisateur,
+		Difficulty: difficulty_test,
 	}
 	tmpl, err := template.ParseFiles("html/index.html")
 	if err != nil {
@@ -84,12 +90,22 @@ func handlerPlay(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	colStr := r.FormValue("col")
 	c, err := strconv.Atoi(colStr)
-	if err != nil || c < 0 || c > 6 {
+	if err != nil || c < 0 || c >= cols {
 		http.Redirect(w, r, "/game", http.StatusSeeOther)
 		return
 	}
 
-	for i := 5; i >= 0; i-- {
+	var startRow int
+	switch difficulty_test {
+	case 1: // Facile → grille 6x7
+		startRow = 5
+	case 2: // Moyenne → grille 6x9
+		startRow = 5
+	case 3: // Difficile → grille 7x8
+		startRow = 6
+	}
+
+	for i := startRow; i >= 0; i-- {
 		if grille[i][c] == "" {
 			grille[i][c] = joueur
 			if checkVictory(joueur) {
@@ -149,8 +165,9 @@ func handlerReset(w http.ResponseWriter, r *http.Request) {
 }
 
 func checkVictory(player string) bool {
-	for row := 0; row < 6; row++ {
-		for col := 0; col <= 3; col++ {
+	// Horizontal
+	for row := 0; row < rows; row++ {
+		for col := 0; col <= cols-4; col++ {
 			if grille[row][col] == player &&
 				grille[row][col+1] == player &&
 				grille[row][col+2] == player &&
@@ -159,8 +176,10 @@ func checkVictory(player string) bool {
 			}
 		}
 	}
-	for col := 0; col < 7; col++ {
-		for row := 0; row <= 2; row++ {
+
+	// Vertical
+	for col := 0; col < cols; col++ {
+		for row := 0; row <= rows-4; row++ {
 			if grille[row][col] == player &&
 				grille[row+1][col] == player &&
 				grille[row+2][col] == player &&
@@ -169,8 +188,10 @@ func checkVictory(player string) bool {
 			}
 		}
 	}
-	for row := 0; row <= 2; row++ {
-		for col := 0; col <= 3; col++ {
+
+	// Diagonale ↘
+	for row := 0; row <= rows-4; row++ {
+		for col := 0; col <= cols-4; col++ {
 			if grille[row][col] == player &&
 				grille[row+1][col+1] == player &&
 				grille[row+2][col+2] == player &&
@@ -179,8 +200,10 @@ func checkVictory(player string) bool {
 			}
 		}
 	}
-	for row := 3; row < 6; row++ {
-		for col := 0; col <= 3; col++ {
+
+	// Diagonale ↙
+	for row := 3; row < rows; row++ {
+		for col := 0; col <= cols-4; col++ {
 			if grille[row][col] == player &&
 				grille[row-1][col+1] == player &&
 				grille[row-2][col+2] == player &&
@@ -189,6 +212,7 @@ func checkVictory(player string) bool {
 			}
 		}
 	}
+
 	return false
 }
 
