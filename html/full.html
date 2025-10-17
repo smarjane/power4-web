@@ -7,18 +7,17 @@
 </head>
 <body>
   <h1 class="winner-title">🤝 Match nul ! La grille est pleine.</h1>
-
-  <div class="board">
+<div class="board">
     {{range .Grille}}
-      <div class="row">
+      {{ if eq $.Difficulty 1 }}
+        <div class="row-easy">
+      {{ else if eq $.Difficulty 2 }}
+        <div class="row-medium">
+      {{ else if eq $.Difficulty 3 }}
+        <div class="row-hard">
+      {{ end }}
         {{range .}}
-          <div class="cell">
-            {{if eq . "🔴"}}
-              <button class="red-btn" disabled>🔴</button>
-            {{else if eq . "🟡"}}
-              <button class="yellow-btn" disabled>🟡</button>
-            {{end}}
-          </div>
+          <div class="cell {{if eq . "🔴"}}red{{else if eq . "🟡"}}yellow{{end}}">{{.}}</div>
         {{end}}
       </div>
     {{end}}

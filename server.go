@@ -147,9 +147,10 @@ func handlerWin(w http.ResponseWriter, r *http.Request) {
 
 func handlerDraw(w http.ResponseWriter, r *http.Request) {
 	data := PageData{
-		Grille: grille,
-		Joueur: joueur,
-		Nom:    nomUtilisateur,
+		Grille:     grille,
+		Joueur:     joueur,
+		Nom:        nomUtilisateur,
+		Difficulty: difficulty_test,
 	}
 	tmpl, err := template.ParseFiles("html/full.html")
 	if err != nil {
