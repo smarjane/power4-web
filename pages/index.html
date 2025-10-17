@@ -8,7 +8,6 @@
 <body>
   <h1>PUISSANCE 4</h1>
 
-  <!-- Ligne horizontale de boutons -->
   {{ if eq .Difficulty 1 }}
     <div class="top-controls-easy">
   {{ else if eq .Difficulty 2 }}
@@ -24,7 +23,6 @@
       {{end}}
     </div>
 
-  <!-- Plateau -->
   <div class="board">
     {{range .Grille}}
       {{ if eq $.Difficulty 1 }}
