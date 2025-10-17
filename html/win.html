@@ -8,8 +8,11 @@
 <body>
   <h1>🎉 Joueur {{.Joueur}} a gagné ! 🎉</h1>
   <h2>Joueur {{.Looser}} a perdu !</h2>
+
   <form method="POST" action="/reset">
-    <button type="submit">🔄 Nouveau jeu</button>
+    <button type="submit" class="new-game-btn">
+      🔄 Nouveau jeu
+    </button>
   </form>
 </body>
 </html>

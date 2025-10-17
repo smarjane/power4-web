@@ -66,7 +66,6 @@ h2 {
   animation: fadeIn 1s ease-in-out;
 }
 
-
 .top-controls form {
   display: flex;
   justify-content: center;
@@ -245,4 +244,174 @@ button.new-game-btn:hover {
   h1 {
     font-size: 2rem;
   }
+}
+
+/* 🔘 STYLE MODERNE DES BOUTONS (NOUVEAU JEU + DEMARRER LE JEU) */
+button.start-btn,
+button.new-game-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 18px 45px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #111;
+  background: linear-gradient(145deg, #ffb6b9, #ff6f61);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 5px 20px rgba(255, 100, 80, 0.6);
+  transition: all 0.3s ease;
+}
+
+/* 🌈 Effet lumineux au survol */
+button.start-btn:hover,
+button.new-game-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 100, 80, 0.8);
+}
+
+/* 💫 Petite animation d’appui */
+button.start-btn:active,
+button.new-game-btn:active {
+  transform: scale(0.97);
+}
+
+/* 🧿 Icône à gauche du texte */
+button.start-btn img,
+button.new-game-btn img {
+  width: 22px;
+  height: 22px;
+}
+/* 🔹 AJOUTS START.HTML (NOMS JOUEURS) */
+.start-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: radial-gradient(circle at top, #001f3f 0%, #002b5c 100%);
+  border-radius: 25px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+  max-width: 500px;
+  margin: 50px auto;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.start-container label {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #ffd60a;
+  text-shadow: 1px 1px 5px #000;
+}
+
+.start-container input[type="text"] {
+  width: 100%;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  border: 2px solid #0077b6;
+  background: #023e8a;
+  color: #f8f9fa;
+  font-size: 1.1rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.start-container input[type="text"]:focus {
+  border-color: #ffd60a;
+  box-shadow: 0 0 15px rgba(255, 214, 10, 0.7);
+  outline: none;
+}
+
+.start-container p {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #e0fbfc;
+  margin-bottom: 10px;
+}
+
+.start-container input[type="radio"] {
+  accent-color: #ffd60a;
+  transform: scale(1.2);
+  margin-right: 8px;
+}
+
+/* 🔹 AJOUTS INDEX.HTML (GRILLES & JOUEUR ACTIF) */
+.current-player {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 15px 0;
+  color: #ffd60a;
+  text-shadow: 1px 1px 10px #000;
+}
+
+.top-controls-easy,
+.top-controls-medium,
+.top-controls-hard {
+  gap: 8px;
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.top-controls-easy button,
+.top-controls-medium button,
+.top-controls-hard button {
+  width: 60px;
+  height: 60px;
+  font-size: 1.5rem;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #00b4d8, #0077b6);
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.top-controls-easy button:hover,
+.top-controls-medium button:hover,
+.top-controls-hard button:hover {
+  transform: scale(1.1) translateY(-2px);
+  background: linear-gradient(145deg, #0096c7, #005f86);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.7);
+}
+
+.board {
+  gap: 5px;
+}
+
+.cell {
+  width: 70px;
+  height: 70px;
+}
+.top-controls-easy {
+  display: grid;
+  grid-template-columns: repeat(7, 80px);
+  gap: 6px;
+  width: calc(7 * 80px + 6 * 6px); /* largeur exacte du plateau */
+  margin: 20px auto 15px auto; /* centre horizontal */
+}
+
+.top-controls-medium {
+  display: grid;
+  grid-template-columns: repeat(9, 80px);
+  gap: 6px;
+  width: calc(9 * 80px + 8 * 6px);
+  margin: 20px auto 15px auto;
+}
+
+.top-controls-hard {
+  display: grid;
+  grid-template-columns: repeat(8, 80px);
+  gap: 6px;
+  width: calc(8 * 80px + 7 * 6px);
+  margin: 20px auto 15px auto;
 }
