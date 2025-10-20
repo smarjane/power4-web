@@ -20,8 +20,8 @@ var grille [][]string
 var joueur string = "🔴"
 var nomUtilisateur string = ""
 var templates *template.Template
-var rows, cols int = 7, 8 // dimensions par défaut
-var difficulty_test = 1
+var rows, cols int = 7, 8 // dimensions par défaut de la grille
+var difficulty_test = 1   //mentors, pour difficulté du jeu
 
 func initGrille() [][]string {
 	grille := make([][]string, rows)
@@ -36,7 +36,7 @@ func handlerStart(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
 		player1 := r.FormValue("player1")
 		player2 := r.FormValue("player2")
-		difficulty := r.FormValue("difficulty")
+		difficulty := r.FormValue("difficulty") //mentors aide
 
 		if player1 == "" || player2 == "" || difficulty == "" {
 			http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -238,7 +238,7 @@ func isDraw() bool {
 }
 
 func main() {
-	grille = initGrille()
+	grille = initGrille() //grille de jeu vide qui se reinitialise
 	templates = template.Must(template.ParseFiles(
 		"pages/start.html",
 		"pages/index.html",
@@ -255,6 +255,6 @@ func main() {
 	http.HandleFunc("/reset", handlerReset)
 	http.HandleFunc("/replay", handlerReplay)
 
-	log.Println("Serveur lancé sur http://localhost:8080")
+	log.Println("Serveur lancé sur http://localhost:8080") //seulement pour console
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
