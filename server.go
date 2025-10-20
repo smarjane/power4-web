@@ -20,7 +20,7 @@ var grille [][]string
 var joueur string = "🔴"
 var nomUtilisateur string = ""
 var templates *template.Template
-var rows, cols int = 7, 8 // dimensions par défaut de la grille
+var rows, cols int = 6, 7 // dimensions par défaut de la grille
 var difficulty_test = 1   //mentors, pour difficulté du jeu
 
 func initGrille() [][]string {
